@@ -5,16 +5,19 @@ import java.net.HttpURLConnection;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class GenieConnection
 {
-	private String ssuid,qss,qsg;
+	private HashMap cookies;
 	private boolean loggedin;
 	private String username;
 	private String password;
 
 	public GenieConnection(String username, String password)
 	{
+		cookies = new HashMap();
 		this.username=username;
 		this.password=password;
 		loggedin=false;
@@ -38,24 +41,15 @@ public class GenieConnection
 				{
 					String thiscookie=con.getHeaderField(loop);
 					thiscookie=thiscookie.substring(0,thiscookie.indexOf(";"));
-					// System.out.println(thiscookie);
-					if (thiscookie.startsWith("QSS"))
-					{
-						qss=thiscookie;
-					}
-					if (thiscookie.startsWith("QSG"))
-					{
-						qsg=thiscookie;
-					}
-					if (thiscookie.startsWith("ssuid"))
-					{
-						ssuid=thiscookie;
-					}
+					String cookiename=thiscookie.substring(0,thiscookie.indexOf("="));
+					String cookievalue=thiscookie.substring(thiscookie.indexOf("=")+1);
+					//System.out.println(cookiename+" = "+cookievalue);
+					cookies.put(cookiename,cookievalue);
 				}
 				loop++;
 			}
 			loggedin=true;
-			System.out.println("Successfull Login");
+			System.out.println("Successful Login ("+con.getResponseCode()+")");
 		}
 		catch (Exception e)
 		{
@@ -63,6 +57,22 @@ public class GenieConnection
 		}
 	}
 
+	private String getCookieList()
+	{
+		StringBuffer list = new StringBuffer();
+		Iterator loop = cookies.keySet().iterator();
+		while (loop.hasNext())
+		{
+			String name = (String)loop.next();
+			list.append(name+"="+cookies.get(name));
+			if (loop.hasNext())
+			{
+				list.append("; ");
+			}
+		}
+		return list.toString();
+	}
+	
 	public void sendTextMessage(String number, String message)
 	{
 		if (loggedin)
@@ -72,14 +82,14 @@ public class GenieConnection
 				HttpURLConnection con = (HttpURLConnection)(new URL("http://www.genie.co.uk/gmail/sms")).openConnection();
 				con.setRequestMethod("POST");
 				con.setInstanceFollowRedirects(false);
-				con.setRequestProperty("Cookie",ssuid+"; "+qss+"; "+qsg);
+				con.setRequestProperty("Cookie",getCookieList());
 				con.setDoOutput(true);
 				PrintWriter out = new PrintWriter(con.getOutputStream());
 				out.print("RECIPIENT="+number+"&MESSAGE="+message+"&action=Send");
 				out.close();
 				con.connect();
 				con.getHeaderField(1);
-				System.out.println("Message Sent");
+				System.out.println("Message Sent ("+con.getResponseCode()+")");
 			}
 			catch (Exception e)
 			{
@@ -95,15 +105,16 @@ public class GenieConnection
 			try
 			{
 				HttpURLConnection con = (HttpURLConnection)(new URL("http://www.genie.co.uk/logout")).openConnection();
-				con.setRequestProperty("Cookie",ssuid+"; "+qss+"; "+qsg);
+				con.setRequestProperty("Cookie",getCookieList());
 				con.getHeaderField(1);
 				loggedin=false;
-				System.out.println("Logged out");
+				System.out.println("Logged out ("+con.getResponseCode()+")");
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
+			cookies.clear();
 		}
 	}
 }
