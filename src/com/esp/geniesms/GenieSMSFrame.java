@@ -11,15 +11,6 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.beans.*;
 
-/**
- * Title:
- * Description:
- * Copyright:    Copyright (c) 2000
- * Company:
- * @author
- * @version 1.0
- */
-
 public class GenieSMSFrame extends JFrame
 {
 	JPanel contentPane;

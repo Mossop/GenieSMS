@@ -7,15 +7,6 @@ import java.util.Properties;
 import javax.swing.UIManager;
 import java.awt.*;
 
-/**
- * Title:
- * Description:
- * Copyright:    Copyright (c) 2000
- * Company:
- * @author
- * @version 1.0
- */
-
 public class GenieSMS
 {
 	boolean packFrame = false;
