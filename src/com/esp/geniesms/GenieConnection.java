@@ -103,11 +103,4 @@ public class GenieConnection
 			}
 		}
 	}
-
-	public static void main(String[] args)
-	{
-		GenieConnection gc = new GenieConnection("dtownsend","78Cthulhu20");
-		gc.login();
-		gc.sendTextMessage("07909962336","Woohoo! Success at last!");
-	}
 }
