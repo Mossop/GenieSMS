@@ -38,7 +38,7 @@ public class GenieConnection
 				{
 					String thiscookie=con.getHeaderField(loop);
 					thiscookie=thiscookie.substring(0,thiscookie.indexOf(";"));
-					System.out.println(thiscookie);
+					// System.out.println(thiscookie);
 					if (thiscookie.startsWith("QSS"))
 					{
 						qss=thiscookie;
@@ -55,6 +55,7 @@ public class GenieConnection
 				loop++;
 			}
 			loggedin=true;
+			System.out.println("Successfull Login");
 		}
 		catch (Exception e)
 		{
@@ -78,6 +79,7 @@ public class GenieConnection
 				out.close();
 				con.connect();
 				con.getHeaderField(1);
+				System.out.println("Message Sent");
 			}
 			catch (Exception e)
 			{
@@ -96,6 +98,7 @@ public class GenieConnection
 				con.setRequestProperty("Cookie",ssuid+"; "+qss+"; "+qsg);
 				con.getHeaderField(1);
 				loggedin=false;
+				System.out.println("Logged out");
 			}
 			catch (Exception e)
 			{

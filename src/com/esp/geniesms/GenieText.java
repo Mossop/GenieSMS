@@ -24,8 +24,12 @@ public class GenieText
 					line=in.readLine();
 				}
 				GenieConnection gc = new GenieConnection(args[0],args[1]);
+				System.out.println("Logging in");
 				gc.login();
+				System.out.println("Sending message");
 				gc.sendTextMessage(args[2],message.toString());
+				System.out.println("Logging out");
+				gc.logout();
 			}
 			catch (Exception e)
 			{
